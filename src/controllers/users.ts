@@ -6,18 +6,16 @@ import User from "../models/user";
 import { ERROR_CODE } from "../utils/constants";
 import { ICustomRequest } from "types";
 
-export const getUsers = (_req: Request, res: Response) => {
-  return User.find({})
-    .then((users) => res.send({ users }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
-};
-
-export const getUserById = (req: Request, res: Response) => {
-  const id = req.params.userId;
-
-  return User.findById(id)
-    .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+export const getUsers = async (_req: Request, res: Response) => {
+  try {
+    const users = await User.find({});
+    
+    return res.status(200).send(users);
+  } catch {
+    return res
+      .status(ERROR_CODE.DEFAULT)
+      .send({ message: "Произошла ошибка на стороне сервера" });
+  }
 };
 
 export const createUser = async (req: Request, res: Response) => {
@@ -38,6 +36,14 @@ export const createUser = async (req: Request, res: Response) => {
       .status(ERROR_CODE.DEFAULT)
       .send({ message: "Произошла ошибка на стороне сервера" });
   }
+};
+
+export const getUserById = (req: Request, res: Response) => {
+  const id = req.params.userId;
+
+  return User.findById(id)
+    .then((user) => res.send(user))
+    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
 };
 
 export const updateProfile = (req: ICustomRequest, res: Response) => {

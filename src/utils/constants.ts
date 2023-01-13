@@ -1,5 +1,6 @@
-export const ERROR_CODE = {
+export const STATUS_CODE = {
+  OK: 200,
   BAD_REQUEST: 400,
   NOT_FOUND: 404,
-  DEFAULT: 500,
+  DEFAULT_ERROR: 500,
 };

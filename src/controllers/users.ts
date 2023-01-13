@@ -3,17 +3,17 @@ import { Request, Response } from "express";
 import mongoose from "mongoose";
 import User from "../models/user";
 
-import { ERROR_CODE } from "../utils/constants";
+import { STATUS_CODE } from "../utils/constants";
 import { ICustomRequest } from "types";
 
 export const getUsers = async (_req: Request, res: Response) => {
   try {
     const users = await User.find({});
-    
-    return res.status(200).send(users);
+
+    return res.status(STATUS_CODE.OK).send(users);
   } catch {
     return res
-      .status(ERROR_CODE.DEFAULT)
+      .status(STATUS_CODE.DEFAULT_ERROR)
       .send({ message: "Произошла ошибка на стороне сервера" });
   }
 };
@@ -24,16 +24,16 @@ export const createUser = async (req: Request, res: Response) => {
   try {
     const user = await User.create({ name, about, avatar });
 
-    return res.status(200).send(user);
+    return res.status(STATUS_CODE.OK).send(user);
   } catch (error) {
     if (error instanceof mongoose.Error.ValidationError) {
-      return res.status(ERROR_CODE.BAD_REQUEST).send({
+      return res.status(STATUS_CODE.BAD_REQUEST).send({
         message: "Переданы некорректные данные при создании пользователя",
       });
     }
 
     return res
-      .status(ERROR_CODE.DEFAULT)
+      .status(STATUS_CODE.DEFAULT_ERROR)
       .send({ message: "Произошла ошибка на стороне сервера" });
   }
 };

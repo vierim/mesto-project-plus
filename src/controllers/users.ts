@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
-import { ICustomRequest } from "types";
+
+import mongoose from "mongoose";
 import User from "../models/user";
+
+import { ERROR_CODE } from "../utils/constants";
+import { ICustomRequest } from "types";
 
 export const getUsers = (_req: Request, res: Response) => {
   return User.find({})
@@ -16,12 +20,24 @@ export const getUserById = (req: Request, res: Response) => {
     .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
 };
 
-export const createUser = (req: Request, res: Response) => {
+export const createUser = async (req: Request, res: Response) => {
   const { name, about, avatar } = req.body;
 
-  return User.create({ name, about, avatar })
-    .then((user) => res.send({ user }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+  try {
+    const user = await User.create({ name, about, avatar });
+
+    return res.status(200).send(user);
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(ERROR_CODE.BAD_REQUEST).send({
+        message: "Переданы некорректные данные при создании пользователя",
+      });
+    }
+
+    return res
+      .status(ERROR_CODE.DEFAULT)
+      .send({ message: "Произошла ошибка на стороне сервера" });
+  }
 };
 
 export const updateProfile = (req: ICustomRequest, res: Response) => {

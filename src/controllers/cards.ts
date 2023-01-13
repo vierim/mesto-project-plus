@@ -25,3 +25,35 @@ export const deleteCard = (req: Request, res: Response) => {
     .then((card) => res.send({ card }))
     .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
 };
+
+export const addLikeToCard = (req: ICustomRequest, res: Response) => {
+  const cardId = req.params.cardId;
+
+  if (req.user) {
+    const id = req?.user._id;
+
+    return Card.findByIdAndUpdate(
+      cardId,
+      { $addToSet: { likes: id } },
+      { new: true }
+    )
+      .then((card) => res.send(card))
+      .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+  }
+};
+
+export const deleteLikeFromCard = (req: ICustomRequest, res: Response) => {
+  const cardId = req.params.cardId;
+
+  if (req.user) {
+    const id = req.user._id;
+
+    return Card.findByIdAndUpdate(
+      cardId,
+      { $pull: { likes: id as any } }, // избавить от записи 'as any'
+      { new: true }
+    )
+      .then((card) => res.send(card))
+      .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+  }
+};

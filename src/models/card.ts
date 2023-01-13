@@ -25,10 +25,12 @@ const cardSchema = new mongoose.Schema<ICard>({
     ref: "user",
     required: true,
   },
-  likes: {
-    type: [Schema.Types.ObjectId],
-    default: [],
-  },
+  likes: [
+    {
+      type: Schema.Types.ObjectId,
+      // Не пониманию, надо ли тут добавлять параметр ref.
+    },
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

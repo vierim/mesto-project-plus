@@ -11,6 +11,7 @@ const PORT = 3000;
 const app = express();
 app.use(express.json());
 
+mongoose.set('runValidators', true);
 mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
 
 app.use((req: ICustomRequest, _res, next) => {

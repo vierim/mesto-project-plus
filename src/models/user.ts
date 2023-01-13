@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { urlValidation } from '../utils/validation';
 
 interface IUser {
   name: string;
@@ -22,7 +23,10 @@ const userSchema = new mongoose.Schema<IUser>({
   avatar: {
     type: String,
     required: true,
-    // Добавить валидацию для урла регуляркой, так как это поле - ссылка на картинку
+    validate: {
+      validator: urlValidation,
+      message: "Неправильный формат ссылки на изображение",
+    },
   },
 });
 

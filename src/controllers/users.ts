@@ -38,12 +38,31 @@ export const createUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserById = (req: Request, res: Response) => {
-  const id = req.params.userId;
+export const getUserById = async (req: Request, res: Response) => {
+  const { userId } = req.params;
 
-  return User.findById(id)
-    .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const error = new Error("Пользователь с таким id не найден");
+      error.name = "UserNotFound";
+
+      throw error;
+    }
+
+    return res.status(STATUS_CODE.OK).send(user);
+  } catch (error) {
+    if (error instanceof Error && error.name === "UserNotFound") {
+      return res
+        .status(STATUS_CODE.NOT_FOUND)
+        .send({ message: "Пользователь по указанному _id не найден" });
+    }
+
+    return res
+      .status(STATUS_CODE.DEFAULT_ERROR)
+      .send({ message: "Произошла ошибка на стороне сервера" });
+  }
 };
 
 export const updateProfile = (req: ICustomRequest, res: Response) => {

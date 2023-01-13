@@ -65,18 +65,45 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
-export const updateProfile = (req: ICustomRequest, res: Response) => {
+export const updateProfile = async (req: ICustomRequest, res: Response) => {
   const { name, about } = req.body;
+  const userId = req.user?._id;
 
-  if (req.user) {
-    const id = req?.user._id;
-    return User.findByIdAndUpdate(
-      id,
+  try {
+    if (!userId) {
+      throw new Error("User _id is undefined");
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
       { name, about },
-      { returnDocument: "after" }
-    )
-      .then((user) => res.send(user))
-      .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+      { new: true }
+    );
+
+    if (!user) {
+      const error = new Error("Пользователь с таким id не найден");
+      error.name = "UserNotFound";
+
+      throw error;
+    }
+
+    return res.status(STATUS_CODE.OK).send(user);
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(STATUS_CODE.BAD_REQUEST).send({
+        message: "Переданы некорректные данные при обновлении профиля",
+      });
+    }
+
+    if (error instanceof Error && error.name === "UserNotFound") {
+      return res
+        .status(STATUS_CODE.NOT_FOUND)
+        .send({ message: "Пользователь по указанному _id не найден" });
+    }
+
+    return res
+      .status(STATUS_CODE.DEFAULT_ERROR)
+      .send({ message: "Произошла ошибка на стороне сервера" });
   }
 };
 

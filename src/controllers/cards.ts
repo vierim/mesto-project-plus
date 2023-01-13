@@ -1,12 +1,20 @@
 import { Request, Response } from "express";
+
 import Card from "../models/card";
 
+import { STATUS_CODE } from "../utils/constants";
 import { ICustomRequest } from "types";
 
-export const getCards = (_req: Request, res: Response) => {
-  return Card.find({})
-    .then((cards) => res.send({ cards }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+export const getCards = async (_req: Request, res: Response) => {
+  try {
+    const cards = await Card.find({});
+
+    return res.status(STATUS_CODE.OK).send(cards);
+  } catch {
+    return res
+      .status(STATUS_CODE.DEFAULT_ERROR)
+      .send({ message: "Произошла ошибка на стороне сервера" });
+  }
 };
 
 export const createCard = (req: ICustomRequest, res: Response) => {

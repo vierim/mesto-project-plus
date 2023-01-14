@@ -1,18 +1,21 @@
 import express from "express";
 import mongoose from "mongoose";
+import * as dotenv from "dotenv";
 
 import usersRouter from "./routes/users";
 import cardsRouter from "./routes/cards";
 
-import { ICustomRequest } from 'types';
+import { ICustomRequest } from "types";
 
-const PORT = 3000;
+dotenv.config();
+
+const { PORT, MONGO_URL = "mongodb://127.0.0.1:27017/mestodb" } = process.env;
 
 const app = express();
 app.use(express.json());
 
-mongoose.set('runValidators', true);
-mongoose.connect("mongodb://127.0.0.1:27017/mestodb");
+mongoose.set("runValidators", true);
+mongoose.connect(MONGO_URL);
 
 app.use((req: ICustomRequest, _res, next) => {
   req.user = {

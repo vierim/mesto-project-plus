@@ -1,5 +1,5 @@
-import mongoose, { Schema } from "mongoose";
-import { urlValidation } from '../utils/validation';
+import mongoose, { Schema } from 'mongoose';
+import urlValidation from '../utils/validation';
 
 interface ICard {
   name: string;
@@ -21,18 +21,17 @@ const cardSchema = new mongoose.Schema<ICard>({
     required: true,
     validate: {
       validator: urlValidation,
-      message: "Неправильный формат ссылки на изображение",
+      message: 'Неправильный формат ссылки на изображение',
     },
   },
   owner: {
     type: Schema.Types.ObjectId,
-    ref: "user",
+    ref: 'user',
     required: true,
   },
   likes: [
     {
       type: Schema.Types.ObjectId,
-      // Не пониманию, надо ли тут добавлять параметр ref.
     },
   ],
   createdAt: {
@@ -41,4 +40,4 @@ const cardSchema = new mongoose.Schema<ICard>({
   },
 });
 
-export default mongoose.model<ICard>("card", cardSchema);
+export default mongoose.model<ICard>('card', cardSchema);

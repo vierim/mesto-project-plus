@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { urlValidation } from '../utils/validation';
+import mongoose from 'mongoose';
+import urlValidation from '../utils/validation';
 
 interface IUser {
   name: string;
@@ -25,9 +25,9 @@ const userSchema = new mongoose.Schema<IUser>({
     required: true,
     validate: {
       validator: urlValidation,
-      message: "Неправильный формат ссылки на изображение",
+      message: 'Неправильный формат ссылки на изображение',
     },
   },
 });
 
-export default mongoose.model<IUser>("user", userSchema);
+export default mongoose.model<IUser>('user', userSchema);

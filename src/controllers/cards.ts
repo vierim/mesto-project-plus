@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 
+import mongoose from "mongoose";
 import Card from "../models/card";
 
 import { STATUS_CODE } from "../utils/constants";
@@ -17,13 +18,29 @@ export const getCards = async (_req: Request, res: Response) => {
   }
 };
 
-export const createCard = (req: ICustomRequest, res: Response) => {
+export const createCard = async (req: ICustomRequest, res: Response) => {
   const { name, link } = req.body;
-  const owner = req.user ? req.user._id : undefined;
+  const userId = req.user?._id;
 
-  return Card.create({ name, link, owner })
-    .then((card) => res.send({ card }))
-    .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+  try {
+    if (!userId) {
+      throw new Error("User _id is undefined");
+    }
+
+    const card = await Card.create({ name, link, owner: userId });
+
+    return res.status(STATUS_CODE.OK).send(card);
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(STATUS_CODE.BAD_REQUEST).send({
+        message: "Переданы некорректные данные при обновлении профиля",
+      });
+    }
+
+    return res
+      .status(STATUS_CODE.DEFAULT_ERROR)
+      .send({ message: "Произошла ошибка на стороне сервера" });
+  }
 };
 
 export const deleteCard = (req: Request, res: Response) => {

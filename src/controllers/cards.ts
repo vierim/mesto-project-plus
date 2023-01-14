@@ -56,7 +56,7 @@ export const deleteCard = async (req: Request, res: Response) => {
       throw error;
     }
 
-    return res.status(STATUS_CODE.OK).send(card);
+    return res.status(STATUS_CODE.OK).send({ message: 'Карточка удалена' });
   } catch (error) {
     if (error instanceof Error && error.name === 'CardNotFound') {
       return res

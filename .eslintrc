@@ -27,5 +27,13 @@
         "ts": "never"
       }
     ]
-  }
+  },
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "rules": {
+        "no-underscore-dangle": "off"
+      }
+    }
+  ]
 }

@@ -14,7 +14,7 @@ export const getUsers = async (_req: Request, res: Response) => {
   } catch {
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -34,7 +34,7 @@ export const createUser = async (req: Request, res: Response) => {
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -61,7 +61,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -103,7 +103,7 @@ export const updateProfile = async (req: ICustomRequest, res: Response) => {
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -145,6 +145,6 @@ export const updateAvatar = async (req: ICustomRequest, res: Response) => {
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };

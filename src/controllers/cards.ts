@@ -14,7 +14,7 @@ export const getCards = async (_req: Request, res: Response) => {
   } catch {
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -39,7 +39,7 @@ export const createCard = async (req: ICustomRequest, res: Response) => {
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -66,7 +66,7 @@ export const deleteCard = async (req: Request, res: Response) => {
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -108,7 +108,7 @@ export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };
 
@@ -153,6 +153,6 @@ export const deleteLikeFromCard = async (
 
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
-      .send({ message: 'Произошла ошибка на стороне сервера' });
+      .send({ message: 'На сервере произошла ошибка' });
   }
 };

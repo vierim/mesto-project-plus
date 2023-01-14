@@ -70,19 +70,45 @@ export const deleteCard = async (req: Request, res: Response) => {
   }
 };
 
-export const addLikeToCard = (req: ICustomRequest, res: Response) => {
+export const addLikeToCard = async (req: ICustomRequest, res: Response) => {
   const { cardId } = req.params;
+  const userId = req.user?._id;
 
-  if (req.user) {
-    const id = req?.user._id;
+  try {
+    if (!userId) {
+      throw new Error("User _id is undefined");
+    }
 
-    return Card.findByIdAndUpdate(
+    const card = await Card.findByIdAndUpdate(
       cardId,
-      { $addToSet: { likes: id } },
+      { $addToSet: { likes: userId } },
       { new: true }
-    )
-      .then((card) => res.send(card))
-      .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
+    );
+
+    if (!card) {
+      const error = new Error("Карточка с таким id не найдена");
+      error.name = "CardNotFound";
+
+      throw error;
+    }
+
+    return res.status(STATUS_CODE.OK).send(card);
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(STATUS_CODE.BAD_REQUEST).send({
+        message: "Переданы некорректные данные для добавления лайка с карточки",
+      });
+    }
+
+    if (error instanceof Error && error.name === "CardNotFound") {
+      return res
+        .status(STATUS_CODE.NOT_FOUND)
+        .send({ message: "Карточка по указанному _id не найдена" });
+    }
+
+    return res
+      .status(STATUS_CODE.DEFAULT_ERROR)
+      .send({ message: "Произошла ошибка на стороне сервера" });
   }
 };
 

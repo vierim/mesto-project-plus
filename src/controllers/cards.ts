@@ -97,29 +97,6 @@ export const deleteCard = async (req: ICustomRequest, res: Response) => {
       .status(STATUS_CODE.DEFAULT_ERROR)
       .send({ message: 'На сервере произошла ошибка' });
   }
-
-  // try {
-  //   const card = await Card.findByIdAndDelete(cardId);
-
-  //   if (!card) {
-  //     const error = new Error('Карточка с таким id не найдена');
-  //     error.name = 'CardNotFound';
-
-  //     throw error;
-  //   }
-
-  //   return res.status(STATUS_CODE.OK).send({ message: 'Карточка удалена' });
-  // } catch (error) {
-  //   if (error instanceof Error && error.name === 'CardNotFound') {
-  //     return res
-  //       .status(STATUS_CODE.NOT_FOUND)
-  //       .send({ message: 'Карточка по указанному _id не найдена' });
-  //   }
-
-  //   return res
-  //     .status(STATUS_CODE.DEFAULT_ERROR)
-  //     .send({ message: 'На сервере произошла ошибка' });
-  // }
 };
 
 export const addLikeToCard = async (req: ICustomRequest, res: Response) => {

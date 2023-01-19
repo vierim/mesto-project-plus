@@ -2,7 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
-import { ICustomRequest } from './types';
+import { login, createUser } from './controllers/users';
+import auth from './middlewares/auth';
+
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
 
@@ -16,13 +18,10 @@ app.use(express.json());
 mongoose.set('runValidators', true);
 mongoose.connect(MONGO_URL);
 
-app.use((req: ICustomRequest, _res, next) => {
-  req.user = {
-    _id: '63bd2cae9b1fd0974185900f',
-  };
+app.post('/signin', login);
+app.post('/signup', createUser);
 
-  next();
-});
+app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);

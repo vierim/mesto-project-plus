@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 
 import mongoose from 'mongoose';
+import jwt from 'jsonwebtoken';
 import { ICustomRequest } from '../types';
 import User from '../models/user';
 
@@ -13,6 +14,44 @@ export const getUsers = async (_req: Request, res: Response) => {
 
     return res.status(STATUS_CODE.OK).send(users);
   } catch {
+    return res
+      .status(STATUS_CODE.DEFAULT_ERROR)
+      .send({ message: 'На сервере произошла ошибка' });
+  }
+};
+
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const { JWT_SECRET = 'dev-secret' } = process.env;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error('Неправильная почта или пароль');
+      error.name = 'AuthError';
+
+      throw error;
+    }
+
+    const isMatched = await bcrypt.compare(password, user.password);
+
+    if (!isMatched) {
+      const error = new Error('Неправильная почта или пароль');
+      error.name = 'AuthError';
+
+      throw error;
+    }
+
+    return res.send({
+      token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' }),
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AuthError') {
+      return res
+        .status(STATUS_CODE.AUTH_ERROR)
+        .send({ message: 'Неправильная почта или пароль' });
+    }
+
     return res
       .status(STATUS_CODE.DEFAULT_ERROR)
       .send({ message: 'На сервере произошла ошибка' });

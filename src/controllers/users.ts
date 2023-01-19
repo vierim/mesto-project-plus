@@ -118,6 +118,46 @@ export const getUserById = async (req: Request, res: Response) => {
   }
 };
 
+export const getCurrentUser = async (req: ICustomRequest, res: Response) => {
+  const userId = req.user?._id;
+
+  try {
+    if (!userId) {
+      const error = new Error('Необходима авторизация');
+      error.name = 'AuthError';
+
+      throw error;
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      const error = new Error('Пользователь с таким id не найден');
+      error.name = 'UserNotFound';
+
+      throw error;
+    }
+
+    return res.status(STATUS_CODE.OK).send(user);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AuthError') {
+      return res
+        .status(STATUS_CODE.AUTH_ERROR)
+        .send({ message: 'Необходима авторизация' });
+    }
+
+    if (error instanceof Error && error.name === 'UserNotFound') {
+      return res
+        .status(STATUS_CODE.NOT_FOUND)
+        .send({ message: 'Пользователь по указанному _id не найден' });
+    }
+
+    return res
+      .status(STATUS_CODE.DEFAULT_ERROR)
+      .send({ message: 'На сервере произошла ошибка' });
+  }
+};
+
 export const updateProfile = async (req: ICustomRequest, res: Response) => {
   const { name, about } = req.body;
   const userId = req.user?._id;

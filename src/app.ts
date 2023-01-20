@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
+import { requestLogger, errorLogger } from './middlewares/logger';
+
 import { login, createUser } from './controllers/users';
 import auth from './middlewares/auth';
 
@@ -18,6 +20,8 @@ app.use(express.json());
 mongoose.set('runValidators', true);
 mongoose.connect(MONGO_URL);
 
+app.use(requestLogger);
+
 app.post('/signin', login);
 app.post('/signup', createUser);
 
@@ -25,5 +29,7 @@ app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+app.use(errorLogger);
 
 app.listen(PORT, () => {});

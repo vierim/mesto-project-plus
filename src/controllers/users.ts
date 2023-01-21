@@ -25,7 +25,7 @@ export const login = async (req: Request, res: Response) => {
   const { JWT_SECRET = 'dev-secret' } = process.env;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
       const error = new Error('Неправильная почта или пароль');
       error.name = 'AuthError';

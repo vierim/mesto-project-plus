@@ -13,12 +13,12 @@ const cardSchema = new mongoose.Schema<ICard>({
   name: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'Название изображения должно содержать не менее 2 символов'],
+    maxlength: [30, 'Название изображения должно содержать не более 30 символов'],
   },
   link: {
     type: String,
-    required: true,
+    required: [true, 'Пропущено обязательное поле - ссылка на изображение'],
     validate: {
       validator: urlValidation,
       message: 'Неправильный формат ссылки на изображение',

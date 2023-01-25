@@ -1,30 +1,36 @@
-/* eslint-disable consistent-return */
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { ICustomRequest } from '../types';
+import User from '../models/user';
 
-export default (req: ICustomRequest, res: Response, next: NextFunction) => {
+import { ICustomRequest, ITokenData } from '../types';
+
+import { AuthError, NotFoundError } from '../errors';
+
+export default async (req: ICustomRequest, _res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
   const { JWT_SECRET = 'dev-secret' } = process.env;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+    return next(new AuthError('Ошибка авторизации'));
   }
 
-  const token = authorization.replace('Bearer ', '');
   let payload;
+  const token = authorization.replace('Bearer ', '');
 
   try {
     payload = jwt.verify(token, JWT_SECRET);
-  } catch (err) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+  } catch (error) {
+    return next(new AuthError('Ошибка авторизации'));
   }
 
-  req.user = payload as any;
+  req.user = payload as ITokenData;
 
-  next();
+  try {
+    await User.findById(req.user._id)
+      .orFail(new NotFoundError('Пользователь не найден'));
+  } catch (error) {
+    return next(error);
+  }
+
+  return next();
 };

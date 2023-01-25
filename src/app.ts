@@ -2,10 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
-import { requestLogger, errorLogger } from './middlewares/logger';
-
 import { login, createUser } from './controllers/users';
+
+import { requestLogger, errorLogger } from './middlewares/logger';
 import auth from './middlewares/auth';
+import errorHandler from './middlewares/error-handler';
 
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
@@ -31,5 +32,7 @@ app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
 
 app.use(errorLogger);
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {});

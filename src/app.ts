@@ -7,9 +7,15 @@ import { login, createUser } from './controllers/users';
 import { requestLogger, errorLogger } from './middlewares/logger';
 import auth from './middlewares/auth';
 import errorHandler from './middlewares/error-handler';
+import {
+  validateLoginReq,
+  validateCreateUserReq,
+} from './middlewares/validation';
 
 import usersRouter from './routes/users';
 import cardsRouter from './routes/cards';
+
+const { errors } = require('celebrate');
 
 dotenv.config();
 
@@ -23,8 +29,8 @@ mongoose.connect(MONGO_URL);
 
 app.use(requestLogger);
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.post('/signin', validateLoginReq, login);
+app.post('/signup', validateCreateUserReq, createUser);
 
 app.use(auth);
 
@@ -33,6 +39,7 @@ app.use('/cards', cardsRouter);
 
 app.use(errorLogger);
 
+app.use(errors());
 app.use(errorHandler);
 
 app.listen(PORT, () => {});

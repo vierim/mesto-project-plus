@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 import { ICustomRequest } from '../types';
@@ -7,9 +7,16 @@ import { ICustomRequest } from '../types';
 import User from '../models/user';
 import STATUS_CODE from '../utils/constants';
 
-import { NotFoundError, AuthError } from '../errors';
+import {
+  NotFoundError,
+  AuthError,
+} from '../errors';
 
-export const getUsers = async (_req: Request, res: Response, next: NextFunction) => {
+export const getUsers = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const users = await User.find({});
 
@@ -19,7 +26,11 @@ export const getUsers = async (_req: Request, res: Response, next: NextFunction)
   }
 };
 
-export const login = async (req: Request, res: Response, next: NextFunction) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { email, password } = req.body;
   const { JWT_SECRET = 'dev-secret' } = process.env;
 
@@ -42,7 +53,11 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
   }
 };
 
-export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const {
     name,
     about,
@@ -67,7 +82,11 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
   }
 };
 
-export const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserById = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { userId } = req.params;
 
   try {
@@ -80,7 +99,11 @@ export const getUserById = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const getCurrentUser = async (req: ICustomRequest, res: Response, next: NextFunction) => {
+export const getCurrentUser = async (
+  req: ICustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const userId = req.user?._id;
 
   try {
@@ -93,7 +116,11 @@ export const getCurrentUser = async (req: ICustomRequest, res: Response, next: N
   }
 };
 
-export const updateProfile = async (req: ICustomRequest, res: Response, next: NextFunction) => {
+export const updateProfile = async (
+  req: ICustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { name, about } = req.body;
   const userId = req.user?._id;
 
@@ -110,7 +137,11 @@ export const updateProfile = async (req: ICustomRequest, res: Response, next: Ne
   }
 };
 
-export const updateAvatar = async (req: ICustomRequest, res: Response, next: NextFunction) => {
+export const updateAvatar = async (
+  req: ICustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { avatar } = req.body;
   const userId = req.user?._id;
 

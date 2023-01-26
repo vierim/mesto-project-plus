@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
-import urlValidation from '../utils/validation';
+
+import { urlValidation } from '../utils/helpers';
 
 interface IUser {
   name: string;
@@ -14,15 +15,15 @@ const userSchema = new mongoose.Schema<IUser>({
   name: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'Имя пользователя должно содержать не менее 2 символов'],
+    maxlength: [30, 'Имя пользователя должно содержать не более 30 символов'],
     default: 'Жак-Ив Кусто',
   },
   about: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 200,
+    minlength: [2, 'Описание должно содержать не менее 2 символов'],
+    maxlength: [200, 'Описание должно содержать не более 200 символов'],
     default: 'Исследователь',
   },
   avatar: {
@@ -36,16 +37,16 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   email: {
     type: String,
-    required: true,
+    required: [true, 'Пропущено обязательное поле - электронная почта'],
     unique: true,
     validate: {
-      validator: (v: string) => validator.isEmail(v),
-      message: 'Неправильный формат почты',
+      validator: (value: string) => validator.isEmail(value),
+      message: 'Неправильный формат электронной почты',
     },
   },
   password: {
     type: String,
-    required: true,
+    required: [true, 'Пропущено обязательное поле - пароль'],
     select: false,
   },
 });

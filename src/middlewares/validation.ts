@@ -1,4 +1,4 @@
-import urlValidation from '../utils/validation';
+import { urlValidation } from '../utils/helpers';
 
 const { celebrate, Joi } = require('celebrate');
 const { ObjectId } = require('mongoose').Types;
@@ -25,15 +25,35 @@ export const validateCreateCardReq = celebrate({
   }),
 });
 
-export const validateIdParam = celebrate({
+export const validateUserIdParam = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().required().custom((value: string, helpers: any) => {
-      if (ObjectId.isValid(value)) {
-        return value;
-      }
+    userId: Joi.string().required()
+      .messages({
+        'any.required': 'Обязательное поле',
+      })
+      .custom((value: string, helpers: any) => {
+        if (ObjectId.isValid(value)) {
+          return value;
+        }
 
-      return helpers.message('Невалидный id');
-    }),
+        return helpers.message('Невалидный id пользователя');
+      }),
+  }),
+});
+
+export const validateCardIdParam = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required()
+      .messages({
+        'any.required': 'Обязательное поле',
+      })
+      .custom((value: string, helpers: any) => {
+        if (ObjectId.isValid(value)) {
+          return value;
+        }
+
+        return helpers.message('Невалидный id карточки');
+      }),
   }),
 });
 
@@ -60,8 +80,8 @@ export const validateCreateUserReq = celebrate({
       }),
     about: Joi.string().min(2).max(200)
       .messages({
-        'string.min': 'Описание пользователя должно содержать не менее 2 символов',
-        'string.max': 'Описание пользователя должно содержать не более 200 символов',
+        'string.min': 'Описание должно содержать не менее 2 символов',
+        'string.max': 'Описание должно содержать не более 200 символов',
       }),
     avatar: Joi.string()
       .custom((value: string, helpers: any) => {
@@ -85,22 +105,27 @@ export const validateCreateUserReq = celebrate({
 
 export const validateUpdateProfileReq = celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30)
+    name: Joi.string().required().min(2).max(30)
       .messages({
         'string.min': 'Имя пользователя должно содержать не менее 2 символов',
         'string.max': 'Имя пользователя должно содержать не более 30 символов',
+        'any.required': 'Обязательное поле',
       }),
-    about: Joi.string().min(2).max(200)
+    about: Joi.string().required().min(2).max(200)
       .messages({
         'string.min': 'Описание пользователя должно содержать не менее 2 символов',
         'string.max': 'Описание пользователя должно содержать не более 200 символов',
+        'any.required': 'Обязательное поле',
       }),
   }),
 });
 
 export const validateUpdateAvatarReq = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string()
+    avatar: Joi.string().required()
+      .messages({
+        'any.required': 'Обязательное поле',
+      })
       .custom((value: string, helpers: any) => {
         if (urlValidation(value)) {
           return value;

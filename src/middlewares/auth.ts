@@ -1,5 +1,6 @@
 import { NextFunction, Response } from 'express';
 import jwt from 'jsonwebtoken';
+
 import User from '../models/user';
 
 import { ICustomRequest, ITokenData } from '../types';

@@ -12,8 +12,7 @@ import {
   validateCreateUserReq,
 } from './middlewares/validation';
 
-import usersRouter from './routes/users';
-import cardsRouter from './routes/cards';
+import { usersRouter, cardsRouter } from './routes';
 
 const { errors } = require('celebrate');
 

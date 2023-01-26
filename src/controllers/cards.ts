@@ -1,14 +1,23 @@
-import { NextFunction, Request, Response } from 'express';
-
+import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
+
 import { ICustomRequest } from '../types';
+
 import Card from '../models/card';
-
 import STATUS_CODE from '../utils/constants';
-import composeErrorMessage from '../utils/helpers';
-import { NotFoundError, ForbiddenError, ValidationError } from '../errors';
+import { composeErrorMessage } from '../utils/helpers';
 
-export const getCards = async (_req: Request, res: Response, next: NextFunction) => {
+import {
+  NotFoundError,
+  ForbiddenError,
+  ValidationError,
+} from '../errors';
+
+export const getCards = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const cards = await Card.find({}).populate('owner', ['name', 'about']);
 
@@ -18,7 +27,11 @@ export const getCards = async (_req: Request, res: Response, next: NextFunction)
   }
 };
 
-export const createCard = async (req: ICustomRequest, res: Response, next: NextFunction) => {
+export const createCard = async (
+  req: ICustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { name, link } = req.body;
   const userId = req.user?._id;
 
@@ -36,7 +49,11 @@ export const createCard = async (req: ICustomRequest, res: Response, next: NextF
   }
 };
 
-export const deleteCard = async (req: ICustomRequest, res: Response, next: NextFunction) => {
+export const deleteCard = async (
+  req: ICustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { cardId } = req.params;
   const userId = req.user?._id;
 
@@ -57,7 +74,11 @@ export const deleteCard = async (req: ICustomRequest, res: Response, next: NextF
   }
 };
 
-export const addLikeToCard = async (req: ICustomRequest, res: Response, next: NextFunction) => {
+export const addLikeToCard = async (
+  req: ICustomRequest,
+  res: Response,
+  next: NextFunction,
+) => {
   const { cardId } = req.params;
   const userId = req.user?._id;
 

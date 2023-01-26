@@ -10,7 +10,7 @@ import {
 
 import {
   validateCreateCardReq,
-  validateIdParam,
+  validateCardIdParam,
 } from '../middlewares/validation';
 
 const router = Router();
@@ -18,9 +18,9 @@ const router = Router();
 router.get('/', getCards);
 
 router.post('/', validateCreateCardReq, createCard);
-router.delete('/:cardId', validateIdParam, deleteCard);
+router.delete('/:cardId', validateCardIdParam, deleteCard);
 
-router.put('/:cardId/likes', validateIdParam, addLikeToCard);
-router.delete('/:cardId/likes', validateIdParam, deleteLikeFromCard);
+router.put('/:cardId/likes', validateCardIdParam, addLikeToCard);
+router.delete('/:cardId/likes', validateCardIdParam, deleteLikeFromCard);
 
 export default router;

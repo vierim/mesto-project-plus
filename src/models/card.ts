@@ -1,42 +1,45 @@
-import mongoose, { Schema } from 'mongoose';
-import urlValidation from '../utils/validation';
+import mongoose from 'mongoose';
+
+import { urlValidation } from '../utils/helpers';
 
 interface ICard {
   name: string;
   link: string;
-  owner: Schema.Types.ObjectId;
-  likes: Schema.Types.ObjectId[];
+  owner: mongoose.Schema.Types.ObjectId;
+  likes: mongoose.Schema.Types.ObjectId[];
   createdAt: Date;
 }
 
 const cardSchema = new mongoose.Schema<ICard>({
   name: {
     type: String,
-    required: true,
-    minlength: 2,
-    maxlength: 30,
+    required: [true, 'Пропущено обязательное поле - название изображения'],
+    minlength: [2, 'Название изображения должно содержать не менее 2 символов'],
+    maxlength: [30, 'Название изображения должно содержать не более 30 символов'],
   },
   link: {
     type: String,
-    required: true,
+    required: [true, 'Пропущено обязательное поле - ссылка на изображение'],
     validate: {
       validator: urlValidation,
       message: 'Неправильный формат ссылки на изображение',
     },
   },
   owner: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: true,
+    required: [true, 'Пропущено обязательное поле - id владельца изображения'],
   },
   likes: [
     {
-      type: Schema.Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
+      default: [],
     },
   ],
   createdAt: {
     type: Date,
     default: Date.now,
+    required: true,
   },
 });
 

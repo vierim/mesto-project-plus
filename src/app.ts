@@ -2,9 +2,19 @@ import express from 'express';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
 
-import { ICustomRequest } from './types';
-import usersRouter from './routes/users';
-import cardsRouter from './routes/cards';
+import { login, createUser } from './controllers/users';
+
+import { requestLogger, errorLogger } from './middlewares/logger';
+import auth from './middlewares/auth';
+import errorHandler from './middlewares/error-handler';
+import {
+  validateLoginReq,
+  validateCreateUserReq,
+} from './middlewares/validation';
+
+import { usersRouter, cardsRouter } from './routes';
+
+const { errors } = require('celebrate');
 
 dotenv.config();
 
@@ -16,15 +26,19 @@ app.use(express.json());
 mongoose.set('runValidators', true);
 mongoose.connect(MONGO_URL);
 
-app.use((req: ICustomRequest, _res, next) => {
-  req.user = {
-    _id: '63bd2cae9b1fd0974185900f',
-  };
+app.use(requestLogger);
 
-  next();
-});
+app.post('/signin', validateLoginReq, login);
+app.post('/signup', validateCreateUserReq, createUser);
+
+app.use(auth);
 
 app.use('/users', usersRouter);
 app.use('/cards', cardsRouter);
+
+app.use(errorLogger);
+
+app.use(errors());
+app.use(errorHandler);
 
 app.listen(PORT, () => {});

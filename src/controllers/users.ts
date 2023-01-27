@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { ICustomRequest } from '../types';
+import { ICustomRequest, IMongooseError } from '../types';
 
 import User from '../models/user';
 import STATUS_CODE from '../utils/constants';
@@ -10,6 +10,7 @@ import STATUS_CODE from '../utils/constants';
 import {
   NotFoundError,
   AuthError,
+  ConflictError,
 } from '../errors';
 
 export const getUsers = async (
@@ -78,6 +79,12 @@ export const createUser = async (
 
     return res.status(STATUS_CODE.OK).send(user);
   } catch (error) {
+    const { code } = error as IMongooseError;
+
+    if (code && code === 11000) {
+      return next(new ConflictError('Пользователь с таким email уже существует'));
+    }
+
     return next(error);
   }
 };

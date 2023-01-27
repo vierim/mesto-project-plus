@@ -17,3 +17,7 @@ export interface ITokenData {
 export type TJoiHelpersObject = {
   message: (arg0: string) => typeof arg0;
 };
+
+export interface IMongooseError extends Error {
+  code?: number;
+}

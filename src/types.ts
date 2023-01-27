@@ -13,3 +13,7 @@ export interface IHttpException extends Error {
 export interface ITokenData {
   _id: string;
 }
+
+export type TJoiHelpersObject = {
+  message: (arg0: string) => typeof arg0;
+};

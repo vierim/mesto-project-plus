@@ -1,3 +1,4 @@
+import { TJoiHelpersObject } from '../types';
 import { urlValidation } from '../utils/helpers';
 
 const { celebrate, Joi } = require('celebrate');
@@ -12,7 +13,7 @@ export const validateCreateCardReq = celebrate({
         'any.required': 'Обязательное поле',
       }),
     link: Joi.string().required()
-      .custom((value: string, helpers: any) => {
+      .custom((value: string, helpers: TJoiHelpersObject) => {
         if (urlValidation(value)) {
           return value;
         }
@@ -31,7 +32,7 @@ export const validateUserIdParam = celebrate({
       .messages({
         'any.required': 'Обязательное поле',
       })
-      .custom((value: string, helpers: any) => {
+      .custom((value: string, helpers: TJoiHelpersObject) => {
         if (ObjectId.isValid(value)) {
           return value;
         }
@@ -47,7 +48,7 @@ export const validateCardIdParam = celebrate({
       .messages({
         'any.required': 'Обязательное поле',
       })
-      .custom((value: string, helpers: any) => {
+      .custom((value: string, helpers: TJoiHelpersObject) => {
         if (ObjectId.isValid(value)) {
           return value;
         }
@@ -84,7 +85,7 @@ export const validateCreateUserReq = celebrate({
         'string.max': 'Описание должно содержать не более 200 символов',
       }),
     avatar: Joi.string()
-      .custom((value: string, helpers: any) => {
+      .custom((value: string, helpers: TJoiHelpersObject) => {
         if (urlValidation(value)) {
           return value;
         }
@@ -126,7 +127,7 @@ export const validateUpdateAvatarReq = celebrate({
       .messages({
         'any.required': 'Обязательное поле',
       })
-      .custom((value: string, helpers: any) => {
+      .custom((value: string, helpers: TJoiHelpersObject) => {
         if (urlValidation(value)) {
           return value;
         }

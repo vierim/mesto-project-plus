@@ -12,7 +12,6 @@ import {
   AuthError,
   ConflictError,
 } from '../errors';
-// import { getUsefullData } from '../utils/helpers';
 
 export const getUsers = async (
   _req: Request,

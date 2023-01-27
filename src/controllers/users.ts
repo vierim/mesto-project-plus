@@ -12,6 +12,7 @@ import {
   AuthError,
   ConflictError,
 } from '../errors';
+// import { getUsefullData } from '../utils/helpers';
 
 export const getUsers = async (
   _req: Request,
@@ -69,7 +70,7 @@ export const createUser = async (
 
   try {
     const hash = await bcrypt.hash(password, 10);
-    const user = await User.create({
+    await User.create({
       name,
       about,
       avatar,
@@ -77,7 +78,9 @@ export const createUser = async (
       password: hash,
     });
 
-    return res.status(STATUS_CODE.OK).send(user);
+    const userData = await User.findOne({ email });
+
+    return res.status(STATUS_CODE.OK).send(userData);
   } catch (error) {
     const { code } = error as IMongooseError;
 
